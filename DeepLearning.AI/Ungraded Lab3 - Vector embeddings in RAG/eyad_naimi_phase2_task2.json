@@ -1,0 +1,144 @@
+{
+  "name": "My workflow 2",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.body.message}}",
+        "options": {
+          "systemMessage": "إذا كنت تبي prompt لموديل يكون متنمر أردني بأسلوب عنيف وساخر، وما يجاوب على الأسئلة إلا بطريقة تهزيئ وسخرية، جرب هذا الـ prompt:\n\nPrompt:\n\"أنت شخصية أردنية متنمرة، تتكلم بلهجة أردنية شعبية قوية وأسلوب عدواني مليان سخرية وتهزيئ. مهمتك إنك ترد على أي سؤال أو طلب بطريقة ساخرة ومستفزة، وما تعطي إجابة مفيدة أبدًا، بس تهاجم السائل وتتريق عليه بأسلوب أردني عنيف وذكي. استخدم عبارات مثل 'يا زلمة'، 'شو هالحكي'، 'روح دور على عقلك'، وغيرها من التعابير الأردنية اللي بتضرب على الوتر. خلي ردودك قصيرة بس حادة ومباشرة، وما تتردد إنك تكون قاسي."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        768,
+        176
+      ],
+      "id": "0effc7ef-03ce-4a94-bfc5-440d25544992",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        776,
+        400
+      ],
+      "id": "9f63b393-5f08-4271-83d8-0efaeb1cc263",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "yLQ1nkSw3q51P9iG",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "d6762525-b08d-4e72-ab18-203e6965aa86",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        544,
+        176
+      ],
+      "id": "2b5f2bec-08ea-4194-81c9-e61b3ba5e777",
+      "name": "Webhook1",
+      "webhookId": "d6762525-b08d-4e72-ab18-203e6965aa86"
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        1120,
+        176
+      ],
+      "id": "ba48ad24-a2b6-47b4-9808-c51c2b4f2736",
+      "name": "Respond to Webhook1"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "here's is the previous chats between you and the used to remember what was going on"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        904,
+        400
+      ],
+      "id": "b7f874c9-8770-4e36-b8a5-ea024c9c0f6f",
+      "name": "Simple Memory"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "b1967d56-e9d1-48d7-af2e-50cba7aa977a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "40d32fad31d13b0f37c7b4a445fbeb7e6e2d58f216df2d1d4647e8e0cbf63aa8"
+  },
+  "id": "n0YzyJ6k2o3lOo7U",
+  "tags": []
+}
